@@ -2,6 +2,8 @@ import telebot
 import shelve
 import time
 import os
+
+
 """from boto.s3.connection import S3Connection
 
 TG_TOKEN = os.getenv('TG_TOKEN')
@@ -201,6 +203,7 @@ def consent_to_connect_act(info_id, info_key, ID, key, message_id, answer):
 
 
 @bot.callback_query_handler(func=lambda call: 'yes' in call.data or 'no' in call.data)
+@telebot.util.async_dec()
 def consent_to_connect(call):
     with shelve.open('info', writeback=True) as info:
         ID = str(call.message.chat.id)
@@ -268,6 +271,7 @@ def search(message):
 
 
 @bot.message_handler(content_types=['text'])
+@telebot.util.async_dec()
 def text(message):
     ID = str(message.chat.id)
     with shelve.open('info', writeback=True) as info:
