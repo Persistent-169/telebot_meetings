@@ -173,19 +173,19 @@ def consent_to_connect_act(info_id, info_key, ID, key, message_id, answer):
             bot.send_message(chat_id=key, text='Соединение установлено.')
             info_id['my_time'] = str(time.time())
             info_key['my_time'] = str(time.time())
-            my_difference = time.time() - float(info_id['time'])
-            key_difference = time.time() - float(info_key['time'])
+            my_difference = time.time() - float(info_id['my_time'])
+            key_difference = time.time() - float(info_key['my_time'])
             while my_difference < 120 and key_difference < 120:
                 bot.send_message(chat_id=ID, text=str(my_difference) + ' ' + str(key_difference))
-                bot.send_message(chat_id=ID, text=info_id['time'] + info_key['time'])
+                bot.send_message(chat_id=ID, text=info_id['my_time'] + info_key['my_time'])
                 if my_difference >= 60 > my_difference - 10:
                     bot.send_message(chat_id=ID, text="У вас осталась минута, чтобы написать что-нибудь, иначе связь будет разорвана.")
                 if key_difference >= 60 > key_difference - 10:
                     bot.send_message(chat_id=key, text='У вас осталась минута, чтобы написать что-нибудь, иначе связь будет разорвана.')
                 time.sleep(10)
                 try:
-                    my_difference = time.time() - float(info_id['time'])
-                    key_difference = time.time() - float(info_key['time'])
+                    my_difference = time.time() - float(info_id['my_time'])
+                    key_difference = time.time() - float(info_key['my_time'])
                 except:
                     pass
             info_key["other_id"] = ''
@@ -287,7 +287,7 @@ def text(message):
         else:
             if info[ID]["other_id"]:
                 bot.send_message(chat_id=info[ID]["other_id"], text=message.text)
-                info[ID]['time'] = str(time.time())
+                info[ID]['my_time'] = str(time.time())
 
 
 if __name__ == '__main__':
