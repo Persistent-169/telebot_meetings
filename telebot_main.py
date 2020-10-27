@@ -4,7 +4,7 @@ import time
 import os
 from boto.s3.connection import S3Connection
 
-TG_TOKEN = S3Connection(os.getenv('TG_TOKEN'))
+TG_TOKEN = os.getenv('TG_TOKEN')
 
 bot = telebot.TeleBot(TG_TOKEN)
 
