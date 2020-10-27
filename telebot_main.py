@@ -175,25 +175,6 @@ def consent_to_connect_act(info_id, info_key, ID, key, message_id, answer):
             bot.send_message(chat_id=key, text='Соединение установлено.')
             info_id['my_time'] = str(time.time())
             info_key['my_time'] = str(time.time())
-            my_difference = time.time() - float(info_id['my_time'])
-            key_difference = time.time() - float(info_key['my_time'])
-            while my_difference < 120 and key_difference < 120:
-                bot.send_message(chat_id=ID, text=str(my_difference) + ' ' + str(key_difference))
-                bot.send_message(chat_id=ID, text=info_id['my_time'] + info_key['my_time'])
-                if my_difference >= 60 > my_difference - 10:
-                    bot.send_message(chat_id=ID, text="У вас осталась минута, чтобы написать что-нибудь, иначе связь будет разорвана.")
-                if key_difference >= 60 > key_difference - 10:
-                    bot.send_message(chat_id=key, text='У вас осталась минута, чтобы написать что-нибудь, иначе связь будет разорвана.')
-                time.sleep(10)
-                try:
-                    my_difference = time.time() - float(info_id['my_time'])
-                    key_difference = time.time() - float(info_key['my_time'])
-                except:
-                    pass
-            info_key["other_id"] = ''
-            info_id["other_id"] = ''
-            bot.send_message(chat_id=ID, text='Соединение разорвано.')
-            bot.send_message(chat_id=key, text='Соединение разорвано.')
         elif info_key['request_answer'] == 'unknown':
             bot.send_message(chat_id=ID, text='Пользователь еще не дал ответ. Пожалуйста, подождите.')
     else:
@@ -203,7 +184,6 @@ def consent_to_connect_act(info_id, info_key, ID, key, message_id, answer):
 
 
 @bot.callback_query_handler(func=lambda call: 'yes' in call.data or 'no' in call.data)
-#@telebot.util.async_dec()
 def consent_to_connect(call):
     with shelve.open('info', writeback=True) as info:
         ID = str(call.message.chat.id)
@@ -271,7 +251,6 @@ def search(message):
 
 
 @bot.message_handler(content_types=['text'])
-#@telebot.util.async_dec()
 def text(message):
     ID = str(message.chat.id)
     with shelve.open('info', writeback=True) as info:
@@ -290,8 +269,14 @@ def text(message):
                 bot.send_message(chat_id=ID, text='Слишком коротко. Попробуйте снова: ')
         else:
             if info[ID]["other_id"]:
+                if time.time() - float(info[info[ID]["other_id"]]["my_time"]) > 60:
+                    bot.send_message(chat_id=ID, text='Вашего собеседника нет уже больше минуты.'
+                                                      '\nНапоминаю, что с помощью команды /leave_chat вы можете разорвать соединение.')
+                    bot.send_message(chat_id=info[ID]["other_id"], text="Вас нет уже больше минуты.\n"
+                                                                        "Помните, что собеседник может не дождаться вас и разорвать соединение.")
                 bot.send_message(chat_id=info[ID]["other_id"], text=message.text)
                 info[ID]['my_time'] = str(time.time())
+
 
 
 if __name__ == '__main__':
