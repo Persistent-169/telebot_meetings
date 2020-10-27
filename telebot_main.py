@@ -55,7 +55,7 @@ def who(message):
 def leave_chat(message):
     ID = str(message.chat.id)
     with shelve.open('info', writeback=True) as info:
-        info[ID]['black_list'] = info[ID]["black_list"] + info[ID]["other_id"]
+        info[ID]['black_list'] = info[ID]["black_list"] + [info[ID]["other_id"]]
         info[ID]['other_id'] = ''
         bot.delete_message(ID, message.message_id)
         bot.send_message(chat_id=ID, text="Вы вышли из чата.")
@@ -103,7 +103,7 @@ def age(call):
 def find_gender_act(info_id, gender, ID, message_id, keyboard):
     info_id["find"]["gender"] = gender
     bot.delete_message(chat_id=ID, message_id=message_id)
-    bot.send_message(chat_id=ID, text="Укажите верхнюю возрастную границу:", reply_markup=keyboard)
+    bot.send_message(chat_id=ID, text="Укажите нижнюю возрастную границу:", reply_markup=keyboard)
 
 
 @bot.callback_query_handler(func=lambda call: 'find_gender' in call.data)
@@ -125,7 +125,7 @@ def find_gender(call):
 def find_from_age_act(info_id, from_age, ID, message_id, keyboard):
     info_id["find"]["age_from"] = from_age
     bot.delete_message(chat_id=ID, message_id=message_id)
-    bot.send_message(chat_id=ID, text='Укажите нижнюю возрастную границу: ', reply_markup=keyboard)
+    bot.send_message(chat_id=ID, text='Укажите верхнюю возрастную границу: ', reply_markup=keyboard)
 
 
 @bot.callback_query_handler(func=lambda call: 'find_from_age' in call.data)
@@ -269,7 +269,7 @@ def text(message):
                 bot.send_message(chat_id=ID, text='Слишком коротко. Попробуйте снова: ')
         else:
             if info[ID]["other_id"]:
-                if time.time() - float(info[info[ID]["other_id"]]["my_time"]) > 60:
+                if time.time() - float(info[info[ID]["other_id"]]["my_time"]) > 60: # один раз
                     bot.send_message(chat_id=ID, text='Вашего собеседника нет уже больше минуты.'
                                                       '\nНапоминаю, что с помощью команды /leave_chat вы можете разорвать соединение.')
                     bot.send_message(chat_id=info[ID]["other_id"], text="Вас нет уже больше минуты.\n"
