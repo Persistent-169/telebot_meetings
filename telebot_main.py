@@ -4,10 +4,11 @@ import time
 import os
 
 """from boto.s3.connection import S3Connection
+"""
 
 TG_TOKEN = os.getenv('TG_TOKEN')
-"""
-bot = telebot.TeleBot("1171659684:AAGr4vOnru6xxl7pYQO-5MxuLvsWSb_zqs8")
+
+bot = telebot.TeleBot(TG_TOKEN)
 
 
 @bot.message_handler(commands=['start'])
